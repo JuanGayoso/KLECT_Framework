@@ -4,6 +4,7 @@
 CREATE TABLE IF NOT EXISTS lecciones (
     id                  TEXT PRIMARY KEY CHECK (id ~ '^CAT[1-5]-[A-Z]{3}-[A-Z]{3}-[0-9]{3}$'),
     titulo              TEXT NOT NULL,
+    estado_publicacion  TEXT NOT NULL DEFAULT 'BORRADOR' CHECK (estado_publicacion IN ('BORRADOR','VERIFICADA','PUBLICABLE')),
     categoria           TEXT NOT NULL CHECK (categoria IN ('CAT-1','CAT-2','CAT-3','CAT-4','CAT-5')),
     sistema             TEXT NOT NULL CHECK (sistema IN ('Estructural','Envolvente','Acabados','MEP-Mec','MEP-Elec','MEP-San','Sitio')),
     tipo_proyecto       TEXT NOT NULL CHECK (tipo_proyecto IN ('Residencial','Comercial','Industrial','Salud','Educación','Infraestructura')),
@@ -24,6 +25,8 @@ CREATE TABLE IF NOT EXISTS lecciones (
     no_aplica_cuando    TEXT,
     impacto_costo       TEXT,
     impacto_plazo       TEXT,
+    citas_fuente        TEXT[],
+    trazabilidad        JSONB,
     creado_en           TIMESTAMPTZ NOT NULL DEFAULT now()
 );
 

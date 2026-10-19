@@ -16,8 +16,10 @@ revisión de diseño (*backward-flow*).
 | [`schema/`](schema) | Esquema JSON de la ficha KLECT-F01 |
 | [`templates/`](templates) | Plantillas F01 (lección), PROC (procedimiento), REF (referencia) y checklist backward-flow |
 | [`queries/`](queries) | Esquema SQL (L2), ontología Turtle y consultas SPARQL (L3) |
-| [`tools/`](tools) | Validador de fichas, ejecutor del agente (API) y empaquetador de skill |
-| [`examples/`](examples) | Ficha de ejemplo y salida típica de `/analizar` |
+| [`deploy/`](deploy) | Archivos listos para pegar/subir en Claude, ChatGPT y Gemini (sin instalar nada) |
+| [`tools/`](tools) | Validador de fichas (con verificación de citas), ejecutor por API y generador de `deploy/` |
+| [`tests/`](tests) | Casos de prueba anti-alucinación |
+| [`examples/`](examples) | Flujo completo de ejemplo (extracción → preguntas → borrador → publicación) y ficha YAML |
 | [`docs/`](docs) | Visión y cultura, guía de uso, arquitectura de wiki, hoja de ruta, gobierno |
 
 ## Taxonomía de un vistazo
@@ -34,31 +36,29 @@ F6 Causa raíz · F7 Impacto · F8 Uniclass 2015 (Ss).
 
 Detalle en [`docs/02-guia-de-uso.md`](docs/02-guia-de-uso.md).
 
-## Inicio rápido
+## Inicio rápido — sin instalar nada
 
-**Opción A — Prompt de sistema.** Pegue [`agent/system_prompt.md`](agent/system_prompt.md) en un proyecto o asistente.
+Funciona en **Claude, ChatGPT (GPT personalizado) y Gemini (Gem)**. Solo necesita 2 archivos de [`deploy/`](deploy):
 
-**Opción B — Skill de Claude.**
-```bash
-pip install -r requirements.txt
-python tools/build_skill.py      # genera dist/klect-agent.zip
-```
+1. [`instrucciones_compactas.txt`](deploy/instrucciones_compactas.txt) → pegar en las *instrucciones*.
+2. [`KLECT_conocimiento.md`](deploy/KLECT_conocimiento.md) → subir como *conocimiento / archivo del proyecto*.
 
-**Opción C — API.**
-```bash
-export ANTHROPIC_API_KEY=...
-python tools/run_agent.py "/etiquetar En la losa del piso 3 se retiró el curado a los 2 días..."
-python tools/run_agent.py --file articulo.md --mode analizar
-```
+Pasos detallados para cada plataforma, cómo bajar los archivos desde GitHub y la prueba de aceptación:
+**[`docs/06-despliegue-sin-instalar.md`](docs/06-despliegue-sin-instalar.md)**.
 
-**Validar una ficha**
-```bash
-python tools/validate_f01.py examples/ficha_ejemplo.yaml
-```
+Opcionales (requieren Python): `python tools/run_agent.py "/etiquetar …"` para usar la API de Anthropic y
+`python tools/validate_f01.py ficha.yaml --fuente relato.txt` para validar fichas.
+
+## Protocolo de fidelidad (anti-invención)
+El agente **no es el autor de la lección**. Cada dato de hecho debe venir del texto aportado [T] o de una respuesta del usuario [U];
+las facetas de clasificación son inferencias [I] marcadas; las sugerencias propias del agente [A] van aparte y no se publican sin validación.
+Flujo obligatorio: **1 Extracción → 2 Preguntas → 3 Borrador → 4 Publicación (solo con la palabra `PUBLICAR`)**.
+Detalle en [`agent/protocolo_fidelidad.md`](agent/protocolo_fidelidad.md); pruebas en [`tests/casos_anti_alucinacion.md`](tests/casos_anti_alucinacion.md);
+ejemplo en [`examples/`](examples).
 
 ## Principios de comportamiento del agente
 - No inventa datos de impacto (costo, plazo) ni códigos Uniclass no verificables.
-- Declara los campos faltantes en lugar de suponerlos.
+- Declara los campos faltantes en lugar de suponerlos y pregunta lo necesario.
 - Si una ficha falla más de 2 de los 6 criterios de calidad, pide más información antes de clasificar.
 - Redirige procedimientos a la plantilla KLECT-PROC.
 - Terminología AEC; tono de Knowledge Manager especialista.

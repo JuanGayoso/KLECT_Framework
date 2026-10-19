@@ -4,8 +4,9 @@
 
 | Forma | Cuándo | Cómo |
 |---|---|---|
-| **Prompt de sistema** | Proyecto/GPT/asistente de su organización | Pegar `agent/system_prompt.md` como instrucciones |
-| **Skill de Claude** | Uso recurrente con comandos `/analizar`… | `python tools/build_skill.py` → `dist/klect-agent.zip` |
+| **Prompt de sistema (versión completa)** | Entornos sin límite de instrucciones o integraciones propias | `agent/system_prompt.md` (≈14.000 caracteres) |
+| **Claude / ChatGPT / Gemini** | Uso diario, sin instalar nada | Ver [`06-despliegue-sin-instalar.md`](06-despliegue-sin-instalar.md) |
+| **Skill de Claude** | Comandos `/analizar`… automáticos | Subir `deploy/claude/klect-agent.zip` |
 | **API** | Integrar con su wiki o flujo automatizado | `python tools/run_agent.py "/analizar …"` |
 
 ## Comandos
@@ -22,9 +23,10 @@
 Sin comando: texto pegado → `/analizar`; pregunta → `/buscar`.
 
 ## Flujo recomendado de adopción de una lección
-1. `/etiquetar` sobre el relato bruto del residente (captura rápida).
-2. `/analizar` para completar la ficha y detectar faltantes.
-3. Validar: `python tools/validate_f01.py ficha.yaml`.
+1. Pegar el relato bruto de quien vivió la lección (sin resumirlo).
+2. `/analizar`: el agente extrae, muestra lo que falta y **pregunta** (no redacta por su cuenta).
+3. Responder, revisar el borrador y la Declaración de fidelidad; escribir `PUBLICAR` solo si está conforme.
+3b. (Opcional) Validar: `python tools/validate_f01.py ficha.yaml --fuente relato.txt`.
 4. Publicar en la wiki con la plantilla `KLECT-F01`.
 5. `/retroalimentar` si aplica; agregar el ítem a `templates/backward_flow_checklist.md`.
 6. Registrar en la base L2 (`queries/sql/schema.sql`) y/o grafo L3.

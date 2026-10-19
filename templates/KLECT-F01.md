@@ -1,12 +1,14 @@
 # Plantilla KLECT-F01 · Lección aprendida
 
 > Usar para **lecciones aprendidas (LL)**. Si el contenido es un paso a paso repetible, usar `KLECT-PROC`.
+> **Regla:** cada dato de hecho debe venir del texto original o de una respuesta del usuario. Nada se completa con supuestos.
 > Copiar este archivo como `CATn-SIS-FAS-NNN.md` (ver convención en `docs/03-arquitectura-wiki.md`).
 
 ```yaml
 ---
 id: CATn-SIS-FAS-NNN
 titulo: ""
+estado_publicacion: BORRADOR   # BORRADOR | VERIFICADA | PUBLICABLE (solo con PUBLICAR del usuario)
 categoria: CAT-
 sistema: 
 tipo_proyecto: 
@@ -38,6 +40,10 @@ sinonimos_sectoriales: []
 terminos_relacionados: []
 preguntas_busqueda: []
 backward_flow: null      # obligatorio si CAT-1/2/3 o severidad Alta/Crítica
+fuente: {tipo: "", referencia: null, fecha_captura: null}
+citas_fuente: []         # citas LITERALES del texto original
+trazabilidad: {}         # campo: texto | usuario | inferencia  (los campos de hecho nunca son 'inferencia')
+sugerencias_agente: []   # [A] no forman parte de la lección
 ---
 ```
 

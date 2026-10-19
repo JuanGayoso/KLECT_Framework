@@ -11,10 +11,10 @@ Gracias por mejorar el framework. Las contribuciones se publican bajo CC BY-SA 4
 ## Reglas
 1. **Cambios a la taxonomía** (categorías o facetas) requieren un issue con justificación y un
    aumento de versión en `taxonomy/klect_taxonomy.yaml` y `CHANGELOG.md`.
-2. Mantenga sincronizados: `agent/system_prompt.md` ↔ `taxonomy/klect_taxonomy.yaml` ↔
+2. Mantenga sincronizados: `agent/protocolo_fidelidad.md` ↔ `deploy/instrucciones_compactas.txt` ↔ `agent/system_prompt.md` ↔ `taxonomy/klect_taxonomy.yaml` ↔
    `schema/klect_f01.schema.json` ↔ `queries/sql/schema.sql` ↔ `queries/sparql/klect_ontology.ttl`.
 3. Ejemplos: nunca incluya datos confidenciales de proyectos reales ni nombres de personas.
-4. Valide antes de proponer: `python tools/validate_f01.py examples/*.yaml`.
+4. Valide antes de proponer: `python tools/validate_f01.py examples/ficha_ejemplo.yaml --fuente examples/texto_fuente.txt`, regenere `deploy/` con `python tools/build_knowledge.py` y repase `tests/casos_anti_alucinacion.md`.
 5. Mensajes de commit claros, en español o inglés.
 
 ## Flujo
