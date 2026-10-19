@@ -4,10 +4,11 @@
 Funciona en **Claude, ChatGPT y Gemini** pegando dos archivos. No hay que instalar nada.
 
 > Framework KLECT · Icónica Gestión S.A.C. (Lima, Perú, 2025) · AEC Knowledge Series N°01 · [CC BY-SA 4.0](LICENSE.md)
+> Este repositorio es la implementación como agente de IA del paper original: [**Framework para la gestión, clasificación y transmisión de lecciones aprendidas en organizaciones de construcción**](KLECT_Framework_IconicaGestion_2025.pdf) (Juan Germán Gayoso Arnillas, Icónica Gestión / Icónica Arquitectura Integral SAC, 2025).
 
 ## ¿Por qué se llama KLECT?
 
-Según el documento del framework, **KLECT** es la sigla de **K**nowledge **L**ifecycle for **E**ngineering and **C**onstruction **T**oolbox
+Según el [paper original](KLECT_Framework_IconicaGestion_2025.pdf) (Resumen y §1 Introducción), **KLECT** es la sigla de **K**nowledge **L**ifecycle for **E**ngineering and **C**onstruction **T**oolbox
 (*Ciclo de vida del conocimiento para ingeniería y construcción — caja de herramientas*):
 
 | Parte del nombre | Qué significa en el framework |
@@ -43,6 +44,7 @@ Pasos detallados por plataforma y cómo descargar desde GitHub: [`INSTALACION.md
 
 | Archivo | Para qué |
 |---|---|
+| [`KLECT_Framework_IconicaGestion_2025.pdf`](KLECT_Framework_IconicaGestion_2025.pdf) | **Paper original** (22 p.): de aquí sale toda la taxonomía, el ciclo de vida, la ontología y el toolbox. Es referencia para personas; no se sube al agente |
 | [`instrucciones_agente.txt`](instrucciones_agente.txt) | Las instrucciones del agente (≈7.400 caracteres, caben en un GPT) |
 | [`KLECT_conocimiento.md`](KLECT_conocimiento.md) | Todo el conocimiento: instrucciones completas, taxonomía, esquema de ficha, plantillas, guías por modo, ejemplos, ontología, SQL y SPARQL |
 | [`INSTALACION.md`](INSTALACION.md) | Guía paso a paso para Claude, ChatGPT y Gemini |
@@ -52,8 +54,11 @@ Pasos detallados por plataforma y cómo descargar desde GitHub: [`INSTALACION.md
 
 ## Pendientes conocidos
 - Los códigos Uniclass de nivel específico no están incluidos: el agente cita solo lo que puede respaldar y marca "(verificar contra catálogo oficial NBS)".
-- La ontología de `KLECT_conocimiento.md` es una **referencia simplificada**; no equivale al archivo `KLECT-ONT-v1.0.owl` del documento original y su namespace es un marcador de posición.
+- La ontología de `KLECT_conocimiento.md` es una **referencia simplificada**; no equivale a la ontología OWL descrita en el paper (§5) y su namespace es un marcador de posición.
+- El agente usa las 6 fases de proyecto de sus instrucciones; el paper (Tabla 3) lista además *Comisionamiento* y *Demolición*.
 - Los ejemplos son hipotéticos.
 
 ## Cómo citar
 Icónica Gestión S.A.C. (2025). *Framework KLECT*. AEC Knowledge Series N°01.
+
+Paper: Gayoso Arnillas, J. G. (2025). *Framework para la gestión, clasificación y transmisión de lecciones aprendidas en organizaciones de construcción: un enfoque desde la bibliotecología, las ontologías formales y la inteligencia artificial*. Icónica Gestión / Icónica Arquitectura Integral SAC, Lima, Perú.

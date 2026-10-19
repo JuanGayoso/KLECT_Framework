@@ -1,7 +1,7 @@
 # KLECT_conocimiento
 
 Archivo único de conocimiento de **KLECT Agent** (KLECT = *Knowledge Lifecycle for Engineering and Construction Toolbox*).
-Framework KLECT · Icónica Gestión S.A.C. (2025) · AEC Knowledge Series N°01 · CC BY-SA 4.0.
+Framework KLECT · Icónica Gestión S.A.C. (2025) · AEC Knowledge Series N°01 · CC BY-SA 4.0. Paper original: KLECT_Framework_IconicaGestion_2025.pdf (en el repositorio).
 
 ## Índice
 - [01] INSTRUCCIONES COMPLETAS DEL AGENTE (incluye el PROTOCOLO DE FIDELIDAD)
