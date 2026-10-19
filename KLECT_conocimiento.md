@@ -9,6 +9,7 @@ Framework KLECT · Icónica Gestión S.A.C. (2025) · AEC Knowledge Series N°01
 - [03] REFERENCIA UNICLASS 2015 · TABLA Ss
 - [04] ESQUEMA JSON DE LA FICHA KLECT-F01
 - [05] PLANTILLA KLECT-F01 (lección aprendida)
+- [05b] PLANTILLA KLECT-PILOT (plan piloto de validación)
 - [06] PLANTILLA KLECT-PROC (procedimiento)
 - [07] PLANTILLA KLECT-REF (referencia técnica)
 - [08] CHECKLIST BACKWARD-FLOW
@@ -98,6 +99,28 @@ Solo con `PUBLICAR` el estado pasa a PUBLICABLE. Cualquier cambio posterior vuel
 ### Estados de una ficha
 `BORRADOR` (con huecos o sin confirmar) → `VERIFICADA` (usuario confirmó contenido) → `PUBLICABLE` (usuario dijo `PUBLICAR`).
 
+### SELLO DE VALIDEZ — evidencia cuantitativa (independiente del estado de publicación)
+Una lección puede ser relevante y útil aunque tenga muchas recomendaciones y pocos datos cuantitativos de impacto o costo.
+**La falta de cifras NO impide levantarla ni publicarla, pero obliga a marcarla.** Toda ficha lleva el bloque `validez`:
+- `nivel_evidencia` [I]: `CUANTITATIVA` (cifras de impacto en costo/plazo u otra métrica **en la fuente**, y medición del efecto de la
+  recomendación) · `PARCIAL` (alguna cifra, no todas) · `CUALITATIVA` (solo relato y recomendaciones, sin cifras).
+- `estatus`: `EN_VALIDACION` (nivel PARCIAL o CUALITATIVA) · `VALIDADA` (solo con nivel CUANTITATIVA, tras un piloto con datos aportados por el usuario) · `DESCARTADA`.
+- `indicadores_faltantes`: obligatorio y no vacío si el nivel no es CUANTITATIVA. Nombra qué indicador objetivo falta
+  (p. ej. `impacto_costo`, `impacto_plazo`, `frecuencia_ocurrencia`, `efectividad_recomendacion`, `linea_base`).
+  Se deriva de los campos que están `null` en la ficha; no se inventa.
+- **Sello visible:** si el nivel no es CUANTITATIVA, la ficha y la salida muestran el sello
+  `🧪 EN VALIDACIÓN — FALTAN INDICADORES OBJETIVOS: <lista>` junto con la frase "Buena práctica en validación: aplicable con esta advertencia; sin beneficios cuantificados".
+- **Buena práctica en validación:** la organización puede adoptar la recomendación mientras se valida. El agente nunca la presenta como lección
+  validada ni le atribuye ahorros, reducciones o efectividad que no estén en la fuente. Si pasa a backward-flow, el ítem lleva la etiqueta "(Buena práctica en validación)".
+- **Prohibido** subir de nivel con cifras estimadas, típicas de la industria o "plausibles". Una cifra solo cuenta si viene de [T] o [U].
+- **Fase 2:** si el texto no trae cifras de costo, plazo o frecuencia, incluir una pregunta P2: ¿existen registros (costos, partes diarios, NCR, actas) que las contengan? "No hay registros" es respuesta válida y deja la lección en CUALITATIVA.
+- **Plan piloto [A]:** el agente propone (modo `/piloto`, plantilla KLECT-PILOT, sección [05b]) un piloto para generar los sustentos cuantitativos.
+  Es una **propuesta del agente**, no un hecho de la lección: va en el bloque `plan_piloto` con `propuesto_por: agente` y `estado: PROPUESTO`; su hipótesis se redacta
+  solo con la recomendación de la propia lección; los indicadores se nombran, pero **línea base y meta quedan `null`** salvo que las dé el usuario ([T]/[U]) o las cite la especificación.
+  Nada se considera aprobado hasta que un responsable humano lo apruebe.
+- **Cierre del ciclo:** `EN_VALIDACION` → `VALIDADA` o `DESCARTADA`. Solo el usuario cambia el estatus; el agente puede recomendarlo cuando el usuario aporte los resultados medidos y los compara con el criterio de éxito/descarte definido antes del piloto.
+- **Publicación:** una ficha `EN_VALIDACION` solo pasa a `PUBLICABLE` si lleva el sello y un `plan_piloto` (al menos en estado `PROPUESTO`). La Declaración de fidelidad muestra el sello y el plan por separado.
+
 ### Si el usuario pide "complétalo tú", "invéntalo", "estima", "pon algo razonable"
 Rechazar para los campos de hecho, en una frase, sin sermón, y ofrecer: (a) las preguntas necesarias, o
 (b) una sección `sugerencias_agente` separada, etiquetada [A], que no se publica sin validación de un responsable.
@@ -154,6 +177,10 @@ Rechazar para los campos de hecho, en una frase, sin sermón, y ofrecer: (a) las
 /arquitectura [descripción de la organización]
   Propone estructura completa de wiki: namespace, jerarquía, plantillas, política de nombres
   OUTPUT: Árbol de categorías | Plantillas | Convención de nomenclatura | Hoja de ruta
+
+/piloto [lección o ID en validación]
+  Propone el plan piloto para obtener los indicadores objetivos que faltan (sin inventar cifras)
+  OUTPUT: Sello de validez | Indicadores faltantes | Plan piloto KLECT-PILOT [A] | Criterios de éxito/descarte por definir
 
 ## PROTOCOLO DE ANÁLISIS DE ARTÍCULOS DE WIKI
 # Sigue estos 6 pasos en orden para cada artículo
@@ -223,6 +250,11 @@ Plantilla: [Nombre]
 Vinculaciones sugeridas: [lista]
 Nombre normalizado: [código KLECT / título descriptivo]
 
+🧪 VALIDEZ Y EVIDENCIA
+Nivel de evidencia: [CUANTITATIVA / PARCIAL / CUALITATIVA]  ·  Estatus: [VALIDADA / EN_VALIDACION / DESCARTADA]
+Si no es CUANTITATIVA → SELLO: "EN VALIDACIÓN — FALTAN INDICADORES OBJETIVOS: [lista]" + "Buena práctica en validación"
+Plan piloto (propuesta [A], pendiente de aprobación): [hipótesis · indicadores · responsable por definir]
+
 ⚠️ BACKWARD-FLOW (si aplica)
 Item checklist: "[texto accionable para revisión de diseño]"
 Fase de verificación: [Fase]
@@ -267,7 +299,8 @@ SPARQL (L3): [query completo]
 • COHERENCIA CAT↔FASE: CAT-1/2/3 se originan normalmente en fases de Prefactibilidad a Procura; CAT-4 en Construcción; CAT-5 se revela en Operación. Si la fase de origen difiere de la fase de detección, registra ambas (`fase_origen`, `fase_deteccion`) y usa la de origen como F3.
 • BACKWARD-FLOW: el ítem de checklist máximo 2 líneas, en imperativo, verificable (sí/no) y con la fase de verificación.
 • UNICIDAD: si el usuario aporta el listado de lecciones existentes, compara antes de crear; si detectas duplicado, propón fusión en lugar de una ficha nueva.
-• SALIDA MÁQUINA: el bloque YAML debe cumplir el esquema de la sección [04] e incluir `estado_publicacion`, `trazabilidad` y `citas_fuente`.
+• SALIDA MÁQUINA: el bloque YAML debe cumplir el esquema de la sección [04] e incluir `estado_publicacion`, `validez`, `trazabilidad` y `citas_fuente`.
+• VALIDEZ: toda lección sin indicadores objetivos se levanta igualmente, con sello `EN_VALIDACION`, lista de `indicadores_faltantes` y propuesta de plan piloto [A]. Nunca se estiman cifras para evitar el sello. Ver "SELLO DE VALIDEZ" en el PROTOCOLO DE FIDELIDAD.
 
 ---
 
@@ -346,8 +379,21 @@ niveles_riesgo_backward:
   alto: "🟠 Alto"
   medio: "🟡 Medio"
 
+validez:
+  nivel_evidencia:
+    CUANTITATIVA: "Cifras de impacto/costo/plazo en la fuente y medición del efecto de la recomendación"
+    PARCIAL: "Alguna cifra; faltan indicadores"
+    CUALITATIVA: "Relato y recomendaciones sin cifras"
+  estatus:
+    EN_VALIDACION: "Nivel PARCIAL o CUALITATIVA: buena práctica en validación; requiere plan piloto"
+    VALIDADA: "Solo con nivel CUANTITATIVA, tras piloto con datos del usuario"
+    DESCARTADA: "El piloto o la revisión no sustentó la recomendación"
+  indicadores_faltantes_tipicos: [impacto_costo, impacto_plazo, frecuencia_ocurrencia, efectividad_recomendacion, linea_base]
+  sello: "EN VALIDACIÓN — FALTAN INDICADORES OBJETIVOS"
+  estados_piloto: [PROPUESTO, APROBADO, EN_CURSO, CERRADO]
+
 tipos_contenido: [LL, Procedimiento, Estándar, Referencia técnica, Mixto]
-plantillas: {LL: KLECT-F01, Procedimiento: KLECT-PROC, Referencia técnica: KLECT-REF}
+plantillas: {LL: KLECT-F01, Procedimiento: KLECT-PROC, Referencia técnica: KLECT-REF, Plan piloto: KLECT-PILOT}
 
 nomenclatura:
   patron: "CATn-SIS-FAS-NNN"
@@ -413,6 +459,7 @@ un registro propio de códigos Uniclass verificados.
     "impacto",
     "descripcion",
     "estado_publicacion",
+    "validez",
     "trazabilidad"
   ],
   "properties": {
@@ -671,12 +718,166 @@ un registro propio de códigos Uniclass verificados.
             "🟠 Alto",
             "🟡 Medio"
           ]
+        },
+        "etiqueta": {
+          "enum": [
+            "Buena práctica en validación",
+            "Validada"
+          ],
+          "description": "Obligatoria 'Buena práctica en validación' si la lección está EN_VALIDACION"
         }
       },
       "required": [
         "item_checklist",
         "fase_verificacion",
         "nivel_riesgo"
+      ]
+    },
+    "validez": {
+      "type": "object",
+      "description": "Sello de validez: evidencia cuantitativa disponible. Una lección sin indicadores objetivos se levanta, pero queda EN_VALIDACION.",
+      "properties": {
+        "nivel_evidencia": {
+          "enum": [
+            "CUANTITATIVA",
+            "PARCIAL",
+            "CUALITATIVA"
+          ]
+        },
+        "estatus": {
+          "enum": [
+            "VALIDADA",
+            "EN_VALIDACION",
+            "DESCARTADA"
+          ]
+        },
+        "indicadores_faltantes": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "Indicadores objetivos que faltan (p. ej. impacto_costo, impacto_plazo, frecuencia_ocurrencia, efectividad_recomendacion, linea_base)"
+        },
+        "indicadores_disponibles": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "Indicadores con cifra en la fuente ([T]/[U])"
+        }
+      },
+      "required": [
+        "nivel_evidencia",
+        "estatus"
+      ]
+    },
+    "plan_piloto": {
+      "type": [
+        "object",
+        "null"
+      ],
+      "description": "[A] Propuesta de piloto para generar sustento cuantitativo. No es un hecho de la lección. Línea base y meta quedan null salvo que las aporte el usuario o la fuente.",
+      "properties": {
+        "estado": {
+          "enum": [
+            "PROPUESTO",
+            "APROBADO",
+            "EN_CURSO",
+            "CERRADO"
+          ]
+        },
+        "propuesto_por": {
+          "enum": [
+            "agente",
+            "usuario"
+          ]
+        },
+        "hipotesis": {
+          "type": "string",
+          "description": "Redactada solo con la recomendación de la propia lección"
+        },
+        "alcance": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "duracion": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "responsable": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "indicadores": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "object",
+            "properties": {
+              "nombre": {
+                "type": "string"
+              },
+              "unidad": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "fuente_dato": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "linea_base": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "meta": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              }
+            },
+            "required": [
+              "nombre"
+            ]
+          }
+        },
+        "criterio_exito": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "criterio_descarte": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "resultados": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "description": "Resultados medidos, aportados por el usuario tras el piloto"
+        }
+      },
+      "required": [
+        "estado",
+        "propuesto_por",
+        "hipotesis",
+        "indicadores"
       ]
     },
     "estado_publicacion": {
@@ -802,6 +1003,148 @@ un registro propio de códigos Uniclass verificados.
           }
         }
       }
+    },
+    {
+      "if": {
+        "required": [
+          "validez"
+        ],
+        "properties": {
+          "validez": {
+            "required": [
+              "nivel_evidencia"
+            ],
+            "properties": {
+              "nivel_evidencia": {
+                "enum": [
+                  "CUALITATIVA",
+                  "PARCIAL"
+                ]
+              }
+            }
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "validez": {
+            "required": [
+              "indicadores_faltantes"
+            ],
+            "properties": {
+              "indicadores_faltantes": {
+                "minItems": 1
+              },
+              "estatus": {
+                "enum": [
+                  "EN_VALIDACION",
+                  "DESCARTADA"
+                ]
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "required": [
+          "validez"
+        ],
+        "properties": {
+          "validez": {
+            "required": [
+              "estatus"
+            ],
+            "properties": {
+              "estatus": {
+                "const": "VALIDADA"
+              }
+            }
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "validez": {
+            "properties": {
+              "nivel_evidencia": {
+                "const": "CUANTITATIVA"
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "required": [
+          "validez",
+          "estado_publicacion"
+        ],
+        "properties": {
+          "validez": {
+            "required": [
+              "estatus"
+            ],
+            "properties": {
+              "estatus": {
+                "const": "EN_VALIDACION"
+              }
+            }
+          },
+          "estado_publicacion": {
+            "const": "PUBLICABLE"
+          }
+        }
+      },
+      "then": {
+        "required": [
+          "plan_piloto"
+        ],
+        "properties": {
+          "plan_piloto": {
+            "type": "object"
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "required": [
+          "validez",
+          "backward_flow"
+        ],
+        "properties": {
+          "validez": {
+            "required": [
+              "estatus"
+            ],
+            "properties": {
+              "estatus": {
+                "const": "EN_VALIDACION"
+              }
+            }
+          },
+          "backward_flow": {
+            "type": "object"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "backward_flow": {
+            "required": [
+              "etiqueta"
+            ],
+            "properties": {
+              "etiqueta": {
+                "const": "Buena práctica en validación"
+              }
+            }
+          }
+        }
+      }
     }
   ]
 }
@@ -822,6 +1165,11 @@ un registro propio de códigos Uniclass verificados.
 id: CATn-SIS-FAS-NNN
 titulo: ""
 estado_publicacion: BORRADOR   # BORRADOR | VERIFICADA | PUBLICABLE (solo con PUBLICAR del usuario)
+validez:                       # SELLO DE VALIDEZ (obligatorio)
+  nivel_evidencia: CUALITATIVA # CUANTITATIVA | PARCIAL | CUALITATIVA  (solo hay CUANTITATIVA con cifras de la fuente)
+  estatus: EN_VALIDACION       # EN_VALIDACION | VALIDADA | DESCARTADA
+  indicadores_faltantes: []    # obligatorio y no vacío si no es CUANTITATIVA (impacto_costo, impacto_plazo, frecuencia_ocurrencia, efectividad_recomendacion, linea_base)
+  indicadores_disponibles: []
 categoria: CAT-
 sistema: 
 tipo_proyecto: 
@@ -856,9 +1204,14 @@ backward_flow: null      # obligatorio si CAT-1/2/3 o severidad Alta/Crítica
 fuente: {tipo: "", referencia: null, fecha_captura: null}
 citas_fuente: []         # citas LITERALES del texto original
 trazabilidad: {}         # campo: texto | usuario | inferencia  (los campos de hecho nunca son 'inferencia')
+plan_piloto: null        # [A] propuesta de piloto (KLECT-PILOT, sección [05b]); obligatorio para PUBLICABLE si EN_VALIDACION
 sugerencias_agente: []   # [A] no forman parte de la lección
 ---
 ```
+
+> **Sello de validez** _(si el nivel de evidencia no es CUANTITATIVA, escribir aquí)_:
+> 🧪 **EN VALIDACIÓN — FALTAN INDICADORES OBJETIVOS:** _lista de `indicadores_faltantes`_.
+> _Buena práctica en validación: aplicable con esta advertencia; sin beneficios cuantificados._
 
 ## 1. Contexto de aplicación
 _¿Qué proyecto, qué condiciones, qué fase? ¿Cuándo aplica y cuándo NO aplica esta lección?_
@@ -888,6 +1241,60 @@ _Costo / plazo / calidad / seguridad solo con datos reales de la fuente._
 
 ## 9. Adjuntos
 _Fotos, planos, RFI, actas, NCR._
+
+## 10. Validez y plan piloto
+- **Nivel de evidencia / estatus:** 
+- **Indicadores disponibles (con cifra en la fuente):** 
+- **Indicadores faltantes:** 
+- **Plan piloto:** enlace a la ficha KLECT-PILOT (o "pendiente de proponer"). Las cifras de línea base y meta las define la organización; el agente no las estima.
+
+---
+
+# [05b] PLANTILLA KLECT-PILOT (plan piloto de validación)
+
+## Plantilla KLECT-PILOT · Plan piloto de validación
+
+> Úsese para una lección `EN_VALIDACION` (sin indicadores objetivos). El agente la rellena como **propuesta [A]**; un responsable humano la completa y aprueba.
+> **Regla:** la hipótesis sale solo de la recomendación de la lección; línea base, meta y criterios numéricos los define la organización (o la especificación citada). Nada se estima.
+
+```yaml
+---
+id_piloto: PIL-CATn-SIS-FAS-NNN      # PIL- + id de la lección
+leccion_id: CATn-SIS-FAS-NNN
+estado: PROPUESTO                    # PROPUESTO | APROBADO | EN_CURSO | CERRADO
+propuesto_por: agente                # agente | usuario
+aprobado_por: null                   # persona responsable; solo un humano aprueba
+hipotesis: ""                        # "Si se aplica <recomendación de la lección>, entonces <indicador> mejora"
+alcance: null                        # proyecto(s), frente(s) y número de repeticiones; lo define la organización
+duracion: null
+responsable: null
+indicadores:
+  - nombre: ""
+    unidad: null
+    fuente_dato: null                # registro de obra, parte diario, NCR, acta, control de costos…
+    linea_base: null                 # medir ANTES de aplicar; no se inventa
+    meta: null
+criterio_exito: null                 # definir ANTES de empezar
+criterio_descarte: null
+resultados: null                     # los carga el usuario al cerrar
+decision: null                       # VALIDADA | DESCARTADA | EXTENDER_PILOTO (decisión humana)
+---
+```
+
+## 1. Qué se quiere demostrar
+_Hipótesis (de la recomendación de la lección) y por qué la lección está EN_VALIDACION (qué indicadores faltan)._
+
+## 2. Diseño del piloto
+_Dónde y cuándo se aplica la recomendación, con qué grupo de control o comparación (si la organización lo define)._
+
+## 3. Qué se mide y cómo
+_Indicadores, fuente del dato, frecuencia de registro, quién registra._
+
+## 4. Criterios de decisión
+_Éxito y descarte, definidos antes de empezar._
+
+## 5. Resultados y decisión
+_Se completa al cierre con datos reales. Si es VALIDADA: actualizar la ficha F01 (nivel CUANTITATIVA, `indicadores_disponibles`, retirar el sello). Si es DESCARTADA: dejar constancia._
 
 ---
 
@@ -999,13 +1406,13 @@ Riesgo: 🔴/🟠/🟡
 ### Modo `/analizar [artículo]`
 
 **Propósito:** clasificar un artículo de wiki, extraer metadatos y proponer mejoras estructurales — **sin inventar contenido**.
-**Rige el PROTOCOLO DE FIDELIDAD** (sección [01]): 4 fases obligatorias.
+**Rige el PROTOCOLO DE FIDELIDAD** (sección [01]): 4 fases obligatorias. Incluye el **sello de validez** (si faltan cifras, la lección se levanta `EN_VALIDACION`).
 
 ## Flujo
 1. **Fase 1 — Extracción:** tabla campo/valor/origen/cita literal + lista `NO ESTÁ EN EL TEXTO` + diagnóstico (paso 1 del protocolo de análisis).
 2. **Fase 2 — Preguntas:** P1 bloqueantes y P2 complementarias; máx. 7; neutras. Esperar respuesta.
-3. **Fase 3 — Borrador:** clasificación KLECT, ficha F01 (YAML conforme al esquema de la sección [04], con `trazabilidad` y `citas_fuente`),
-   indexación, estructura de wiki, backward-flow si aplica. Estado `BORRADOR`. Auditoría de fidelidad.
+3. **Fase 3 — Borrador:** clasificación KLECT, ficha F01 (YAML conforme al esquema de la sección [04], con `validez`, `trazabilidad` y `citas_fuente`),
+   indexación, estructura de wiki, backward-flow si aplica. Si no hay indicadores objetivos: sello `EN_VALIDACION` + `plan_piloto` propuesto [A]. Estado `BORRADOR`. Auditoría de fidelidad.
 4. **Fase 4 — Publicación:** declaración de fidelidad; solo con `PUBLICAR` el estado pasa a `PUBLICABLE`.
 
 ## Puertas de calidad
@@ -1029,7 +1436,8 @@ y se mantienen separadas del contenido de la lección.
 2. **Mapa de cobertura:** matriz CAT × Sistema (F1) con conteo; segunda matriz Fase (F3) × Sistema.
 3. **Huecos críticos:** celdas vacías donde la experiencia sectorial indica que debería haber lecciones (p. ej. CAT-1 en Estructural/Prefactibilidad). Distinguir "hueco real" de "no aplica al portafolio".
 4. **Duplicados:** títulos semánticamente equivalentes; proponer fusión y cuál es el artículo maestro.
-5. **Prioridades:** ordenar acciones por (severidad potencial × facilidad de corrección). Máx. 10 ítems.
+5. **Validez:** si el listado indica cifras o el estatus de cada lección, contar cuántas están `EN_VALIDACION` y cuáles no tienen plan piloto. Si no hay base, decir "no determinable".
+6. **Prioridades:** ordenar acciones por (severidad potencial × facilidad de corrección). Máx. 10 ítems.
 
 ## Formato
 ```
@@ -1038,6 +1446,7 @@ MAPA DE COBERTURA (CAT × F1)
 ...
 HUECOS CRÍTICOS: ...
 DUPLICADOS: A ≈ B → fusionar en A
+VALIDEZ: N en validación; sin plan piloto: ...
 PRIORIDADES: 1) ... 2) ...
 ```
 Aclarar siempre que la auditoría por títulos es **preliminar**; la confirmación exige leer el contenido.
@@ -1075,6 +1484,7 @@ terminos_controlados: []
 sinonimos_sectoriales: []
 preguntas_busqueda: []
 campos_faltantes: []
+validez: {nivel_evidencia: , estatus: , indicadores_faltantes: []}
 ```
 
 ## 09.4 Modo /buscar
@@ -1111,6 +1521,7 @@ no de conocimiento general del agente.
 3. Redactar el ítem: imperativo, verificable sí/no, máx. 2 líneas, usando los términos de la lección.
 4. Fijar la fase de verificación en el nuevo proyecto (normalmente la fase de **origen** de la causa, no la de detección).
 5. Proponer riesgo 🔴/🟠/🟡 con el criterio explícito; confirmar con el usuario si la severidad era provisional.
+   Si la lección está `EN_VALIDACION`, el ítem lleva la etiqueta **"(Buena práctica en validación)"** y no se le atribuye efectividad medida.
 6. Justificar en 2–3 frases con trazabilidad al ID de la lección.
 7. Cualquier ítem adicional que el agente considere útil va como [A], separado y no publicable sin validación.
 
@@ -1121,6 +1532,7 @@ Alerta: ...
 Item checklist: "..."
 Fase de verificación: ...
 Nivel de riesgo: 🔴/🟠/🟡
+Etiqueta: (Buena práctica en validación) — solo si la lección está EN_VALIDACION
 Justificación (origen [T]/[U] de la lección): ...
 ```
 
@@ -1152,6 +1564,35 @@ KLECT/
 
 ## Hoja de ruta
 Usar la de GUIA_IMPLEMENTACION.md (Hoja de ruta) adaptándola al tamaño y a los recursos de la organización.
+
+## 09.7 Modo /piloto
+
+### Modo `/piloto [lección o ID en validación]`
+
+**Propósito:** proponer un plan piloto para generar los sustentos cuantitativos de una lección relevante que **no tiene indicadores objetivos** (`EN_VALIDACION`).
+**Rige el PROTOCOLO DE FIDELIDAD:** el plan es una propuesta del agente [A]; no se inventan cifras.
+**Salida:** Sello de validez → Indicadores faltantes → Plan piloto KLECT-PILOT (sección [05b]) → Criterios por definir → Siguiente paso.
+
+## Procedimiento
+1. Verificar que la lección tiene **recomendación** con origen [T]/[U]. Si no la tiene, no hay qué probar: preguntar; no inventarla.
+2. Determinar nivel de evidencia y `indicadores_faltantes` a partir de los campos `null` de la ficha. Mostrar el sello.
+3. Redactar la hipótesis solo con la recomendación de la lección ("Si se aplica X, entonces mejora Y").
+4. Proponer **nombres** de indicadores (un indicador por cada faltante) con unidad y fuente de dato típica. **Línea base y meta: `null`.**
+   Solo se escribe una cifra si la dio el usuario o la cita la especificación, indicando su origen.
+5. Preguntar (máx. 5) lo que el diseño necesita y solo el usuario sabe: proyecto/frente piloto, responsable, duración, cómo se registran hoy los datos, qué resultado se consideraría éxito.
+6. Dejar `estado: PROPUESTO`. Recordar que solo un responsable humano lo aprueba, que la línea base se mide **antes** de aplicar la recomendación y que los criterios de éxito/descarte se fijan **antes** de empezar.
+7. Cierre: cuando el usuario aporte resultados medidos, compararlos con el criterio previo y **recomendar** (no decidir) `VALIDADA`, `DESCARTADA` o `EXTENDER_PILOTO`.
+   Si pasa a `VALIDADA`: actualizar la ficha F01 (nivel CUANTITATIVA, `indicadores_disponibles` con origen [U], retirar el sello).
+
+## Formato
+```
+KLECT-PILOT · <ID lección> · <fecha>
+Sello: EN VALIDACIÓN — FALTAN INDICADORES OBJETIVOS: <lista>
+Hipótesis (de la recomendación [T]/[U]): ...
+Indicadores propuestos [A]: nombre | unidad | fuente de dato | línea base: por medir | meta: por definir
+Preguntas al usuario: ...
+Estado: PROPUESTO (pendiente de aprobación humana)
+```
 
 ---
 
@@ -1226,6 +1667,9 @@ Ficha completa en la sección [10c]. Puntos que el agente destaca:
 - **Facetas inferidas [I]** (para confirmar): CAT-4 (la práctica de ejecución no siguió lo especificado), Sistema Estructural,
   Fase Construcción, Causa raíz Proceso (apoyada en [U]: cronograma día 2 vs. especificación 7 días), Impacto Calidad.
 - **Severidad Baja — provisional**: no hay cifras de costo y el usuario dijo que no paralizó la obra. Se confirmará si aparecen datos.
+- **Sello de validez**: nivel `CUALITATIVA` (el usuario respondió que no se registró costo ni atraso) → `EN_VALIDACION`. Faltan: impacto_costo, impacto_plazo,
+  frecuencia_ocurrencia, efectividad_recomendacion. Se levanta igualmente como "Buena práctica en validación".
+- **Plan piloto [A]**: propuesta `PROPUESTO` con hipótesis tomada de la recomendación del usuario; línea base y meta en `null`. Ver la sección [10c].
 - **Backward-flow**: no corresponde (CAT-4 con severidad no Alta/Crítica).
 - **Campos faltantes**: ubicación, impacto_costo, impacto_plazo, aplica_cuando, no_aplica_cuando.
 
@@ -1241,6 +1685,8 @@ Se publicará, campo por campo:
 | solucion | Se inyectó sellador; sin ensayos adicionales | [U] |
 | recomendacion | Programar el curado como actividad con responsable en el cronograma | [U] |
 | Facetas | CAT-4 · Estructural · Construcción · Contratista · Proceso · Calidad · Baja (provisional) | [I]/[U] |
+| validez | 🧪 EN VALIDACIÓN — FALTAN INDICADORES OBJETIVOS: impacto_costo, impacto_plazo, frecuencia_ocurrencia, efectividad_recomendacion | [I] |
+| plan_piloto | Propuesta (estado PROPUESTO, pendiente de aprobación humana); sin cifras de línea base ni meta | [A] |
 
 Para publicar, responda exactamente **`PUBLICAR`**, o indique qué corregir.
 
@@ -1259,6 +1705,11 @@ Para publicar, responda exactamente **`PUBLICAR`**, o indique qué corregir.
 id: CAT4-EST-CON-001
 titulo: Curado de losa retirado antes de lo especificado
 estado_publicacion: BORRADOR
+validez:
+  nivel_evidencia: CUALITATIVA
+  estatus: EN_VALIDACION
+  indicadores_faltantes: [impacto_costo, impacto_plazo, frecuencia_ocurrencia, efectividad_recomendacion]
+  indicadores_disponibles: []
 categoria: CAT-4
 sistema: Estructural
 tipo_proyecto: Comercial
@@ -1311,6 +1762,7 @@ trazabilidad:
   causa_raiz: inferencia
   impacto: inferencia
   uniclass_ss: inferencia
+  validez: inferencia
 terminos_controlados: [curado de concreto, fisuración, losa de entrepiso, desencofrado]
 sinonimos_sectoriales: [mojado de losa, rajaduras en losa]
 terminos_relacionados: [cronograma de obra, especificaciones técnicas]
@@ -1319,6 +1771,22 @@ preguntas_busqueda:
   - ¿Por qué aparecen fisuras finas en una losa después del vaciado?
   - ¿Cómo evitar que el cronograma recorte el curado especificado?
 backward_flow: null
+plan_piloto:   # [A] propuesta del agente; no es un hecho de la lección y no está aprobada
+  estado: PROPUESTO
+  propuesto_por: agente
+  hipotesis: >-
+    Si el curado se programa como actividad con responsable en el cronograma (recomendación del usuario),
+    entonces disminuye la aparición de fisuras finas en las losas.
+  alcance: null
+  duracion: null
+  responsable: null
+  indicadores:
+    - {nombre: Días de curado cumplidos frente a los especificados, unidad: días, fuente_dato: registro de obra, linea_base: null, meta: "7 días (según la especificación indicada por el usuario)"}
+    - {nombre: Losas con fisuras finas detectadas tras el desencofrado, unidad: nº de losas, fuente_dato: inspección de obra, linea_base: null, meta: null}
+    - {nombre: Costo de reparación por losa, unidad: moneda del proyecto, fuente_dato: control de costos, linea_base: null, meta: null}
+  criterio_exito: null
+  criterio_descarte: null
+  resultados: null
 sugerencias_agente: []
 ```
 
@@ -1353,6 +1821,9 @@ klect:CausaRaiz a owl:Class ; rdfs:label "Causa raíz"@es .
 klect:Impacto a owl:Class ; rdfs:label "Dimensión de impacto"@es .
 klect:TipoProyecto a owl:Class ; rdfs:label "Tipo de proyecto"@es .
 klect:ItemChecklist a owl:Class ; rdfs:label "Ítem de checklist backward-flow"@es .
+klect:NivelEvidencia a owl:Class ; rdfs:label "Nivel de evidencia"@es .
+klect:EstatusValidez a owl:Class ; rdfs:label "Estatus de validez"@es .
+klect:PlanPiloto a owl:Class ; rdfs:label "Plan piloto de validación"@es .
 
 # ---- Propiedades de objeto ----
 klect:tieneCategoria a owl:ObjectProperty ; rdfs:domain klect:Leccion ; rdfs:range klect:Categoria .
@@ -1367,12 +1838,16 @@ klect:generaChecklist a owl:ObjectProperty ; rdfs:domain klect:Leccion ; rdfs:ra
 klect:verificarEnFase a owl:ObjectProperty ; rdfs:domain klect:ItemChecklist ; rdfs:range klect:Fase .
 klect:relacionadaCon a owl:ObjectProperty, owl:SymmetricProperty ; rdfs:domain klect:Leccion ; rdfs:range klect:Leccion .
 klect:duplicaA a owl:ObjectProperty ; rdfs:domain klect:Leccion ; rdfs:range klect:Leccion .
+klect:tieneNivelEvidencia a owl:ObjectProperty ; rdfs:domain klect:Leccion ; rdfs:range klect:NivelEvidencia .
+klect:tieneEstatusValidez a owl:ObjectProperty ; rdfs:domain klect:Leccion ; rdfs:range klect:EstatusValidez .
+klect:tienePlanPiloto a owl:ObjectProperty ; rdfs:domain klect:Leccion ; rdfs:range klect:PlanPiloto .
 
 # ---- Propiedades de datos ----
 klect:codigoUniclassSs a owl:DatatypeProperty ; rdfs:domain klect:Leccion ; rdfs:range xsd:string .
 klect:descripcion a owl:DatatypeProperty ; rdfs:domain klect:Leccion ; rdfs:range xsd:string .
 klect:recomendacion a owl:DatatypeProperty ; rdfs:domain klect:Leccion ; rdfs:range xsd:string .
 klect:textoChecklist a owl:DatatypeProperty ; rdfs:domain klect:ItemChecklist ; rdfs:range xsd:string .
+klect:indicadorFaltante a owl:DatatypeProperty ; rdfs:domain klect:Leccion ; rdfs:range xsd:string .
 
 # ---- Individuos: categorías ----
 klect:CAT-1 a klect:Categoria ; rdfs:label "Supuestos de diseño erróneos"@es .
@@ -1398,6 +1873,14 @@ klect:Operacion a klect:Fase ; rdfs:label "Operación"@es .
 klect:Critica a klect:Severidad ; rdfs:label "Crítica"@es .
 klect:Alta a klect:Severidad . klect:Media a klect:Severidad . klect:Baja a klect:Severidad .
 
+# ---- Individuos: validez ----
+klect:Cuantitativa a klect:NivelEvidencia ; rdfs:label "Cuantitativa"@es .
+klect:Parcial a klect:NivelEvidencia ; rdfs:label "Parcial"@es .
+klect:Cualitativa a klect:NivelEvidencia ; rdfs:label "Cualitativa"@es .
+klect:EnValidacion a klect:EstatusValidez ; rdfs:label "En validación (faltan indicadores objetivos)"@es .
+klect:Validada a klect:EstatusValidez ; rdfs:label "Validada"@es .
+klect:Descartada a klect:EstatusValidez ; rdfs:label "Descartada"@es .
+
 # ---- Ejemplo de lección ----
 klect:CAT4-EST-CON-001 a klect:Leccion ;
     rdfs:label "Curado inadecuado de concreto"@es ;
@@ -1405,6 +1888,9 @@ klect:CAT4-EST-CON-001 a klect:Leccion ;
     klect:afectaSistema klect:Estructural ;
     klect:ocurreEnFase klect:Construccion ;
     klect:tieneSeveridad klect:Media ;
+    klect:tieneNivelEvidencia klect:Cualitativa ;
+    klect:tieneEstatusValidez klect:EnValidacion ;
+    klect:indicadorFaltante "impacto_costo", "impacto_plazo" ;
     klect:descripcion "Ejemplo ilustrativo de estructura RDF; no es un caso real."@es .
 ```
 
@@ -1437,6 +1923,20 @@ SELECT ?leccion ?titulo ?sev WHERE {
 # 3) Lecciones relacionadas por cierre transitivo (vecinas en el grafo)
 # SELECT DISTINCT ?otra WHERE {
 #   klect:CAT4-EST-CON-001 klect:relacionadaCon+ ?otra .
+# }
+
+# 5) Lecciones en validación (sin indicadores objetivos) y qué les falta
+# SELECT ?leccion ?titulo ?faltante WHERE {
+#   ?leccion a klect:Leccion ;
+#            rdfs:label ?titulo ;
+#            klect:tieneEstatusValidez klect:EnValidacion .
+#   OPTIONAL { ?leccion klect:indicadorFaltante ?faltante }
+# }
+
+# 6) Lecciones en validación que aún no tienen plan piloto
+# SELECT ?leccion WHERE {
+#   ?leccion klect:tieneEstatusValidez klect:EnValidacion .
+#   FILTER NOT EXISTS { ?leccion klect:tienePlanPiloto ?p }
 # }
 
 # 4) Cobertura: nº de lecciones por categoría y sistema
@@ -1482,7 +1982,13 @@ CREATE TABLE IF NOT EXISTS lecciones (
     impacto_plazo       TEXT,
     citas_fuente        TEXT[],
     trazabilidad        JSONB,
-    creado_en           TIMESTAMPTZ NOT NULL DEFAULT now()
+    nivel_evidencia     TEXT NOT NULL DEFAULT 'CUALITATIVA' CHECK (nivel_evidencia IN ('CUANTITATIVA','PARCIAL','CUALITATIVA')),
+    estatus_validez     TEXT NOT NULL DEFAULT 'EN_VALIDACION' CHECK (estatus_validez IN ('VALIDADA','EN_VALIDACION','DESCARTADA')),
+    indicadores_faltantes TEXT[] NOT NULL DEFAULT '{}',
+    creado_en           TIMESTAMPTZ NOT NULL DEFAULT now(),
+    -- sello de validez: sin cifras no puede estar VALIDADA, y debe decir qué indicadores faltan
+    CONSTRAINT ck_validada_cuantitativa CHECK (estatus_validez <> 'VALIDADA' OR nivel_evidencia = 'CUANTITATIVA'),
+    CONSTRAINT ck_faltantes_declarados CHECK (nivel_evidencia = 'CUANTITATIVA' OR estatus_validez = 'DESCARTADA' OR cardinality(indicadores_faltantes) > 0)
 );
 
 -- Faceta F7 es multivalor
@@ -1513,6 +2019,33 @@ CREATE TABLE IF NOT EXISTS leccion_vinculo (
     PRIMARY KEY (origen_id, destino_id, relacion)
 );
 
+-- Plan piloto de validación (propuesta [A] hasta que un responsable lo apruebe)
+CREATE TABLE IF NOT EXISTS leccion_piloto (
+    leccion_id        TEXT PRIMARY KEY REFERENCES lecciones(id) ON DELETE CASCADE,
+    estado            TEXT NOT NULL DEFAULT 'PROPUESTO' CHECK (estado IN ('PROPUESTO','APROBADO','EN_CURSO','CERRADO')),
+    propuesto_por     TEXT NOT NULL CHECK (propuesto_por IN ('agente','usuario')),
+    aprobado_por      TEXT,
+    hipotesis         TEXT NOT NULL,
+    alcance           TEXT,
+    duracion          TEXT,
+    responsable       TEXT,
+    criterio_exito    TEXT,
+    criterio_descarte TEXT,
+    resultados        TEXT,
+    decision          TEXT CHECK (decision IN ('VALIDADA','DESCARTADA','EXTENDER_PILOTO'))
+);
+
+CREATE TABLE IF NOT EXISTS leccion_piloto_indicador (
+    leccion_id  TEXT REFERENCES leccion_piloto(leccion_id) ON DELETE CASCADE,
+    nombre      TEXT NOT NULL,
+    unidad      TEXT,
+    fuente_dato TEXT,
+    linea_base  TEXT,
+    meta        TEXT,
+    PRIMARY KEY (leccion_id, nombre)
+);
+
+CREATE INDEX IF NOT EXISTS idx_lecciones_validez ON lecciones (estatus_validez, nivel_evidencia);
 CREATE INDEX IF NOT EXISTS idx_lecciones_facetas ON lecciones (categoria, sistema, fase, severidad);
 CREATE INDEX IF NOT EXISTS idx_lecciones_fts ON lecciones
     USING GIN (to_tsvector('spanish', titulo || ' ' || descripcion || ' ' || coalesce(recomendacion,'')));
@@ -1554,4 +2087,18 @@ FROM lecciones a JOIN lecciones b
 -- 6) Lecciones sin clasificar completamente
 SELECT id, titulo FROM lecciones
 WHERE uniclass_ss IS NULL OR uniclass_verificado = FALSE;
+
+-- 7) Lecciones en validación (sin indicadores objetivos) y qué les falta
+SELECT id, titulo, nivel_evidencia, indicadores_faltantes
+FROM lecciones WHERE estatus_validez = 'EN_VALIDACION';
+
+-- 8) Lecciones en validación que aún no tienen plan piloto
+SELECT l.id, l.titulo
+FROM lecciones l LEFT JOIN leccion_piloto p ON p.leccion_id = l.id
+WHERE l.estatus_validez = 'EN_VALIDACION' AND p.leccion_id IS NULL;
+
+-- 9) Buenas prácticas en validación aplicables a una fase (checklist con advertencia)
+SELECT l.id, b.item_checklist, b.nivel_riesgo, 'Buena práctica en validación' AS etiqueta
+FROM leccion_backward b JOIN lecciones l ON l.id = b.leccion_id
+WHERE l.estatus_validez = 'EN_VALIDACION' AND b.fase_verificacion = 'Diseño Detallado';
 ```

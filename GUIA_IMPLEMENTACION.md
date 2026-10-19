@@ -151,6 +151,8 @@ ajústelos a su capacidad.
 ### Flujo de una ficha
 `Borrador` → `Clasificada (agente)` → `Validada (Knowledge Manager)` → `Publicada` → `Revisión periódica` / `Obsoleta`
 
+La publicación es independiente del **sello de validez** (sección 5): una ficha puede estar publicada y seguir `EN_VALIDACION`.
+
 ### Métricas sugeridas
 | Métrica | Pregunta que responde | Fuente |
 |---|---|---|
@@ -160,6 +162,8 @@ ajústelos a su capacidad.
 | Duplicados detectados / fusionados | ¿Unicidad? | `/auditar`; consulta 5 de la sección [14] |
 | Ítems de checklist aplicados por proyecto | ¿Se cierra el ciclo? | `leccion_backward` |
 | Tiempo desde evento hasta ficha publicada | ¿Capturamos a tiempo? | Registro de la wiki |
+| Lecciones `EN_VALIDACION` y % con plan piloto | ¿Cuánto conocimiento sin sustento cuantitativo tenemos? | consultas 7 y 8 de la sección [14] |
+| Pilotos cerrados: % `VALIDADA` vs `DESCARTADA` | ¿Las buenas prácticas resisten la medición? | `leccion_piloto` |
 
 ### Revisión periódica
 Trimestral: obsolescencia (normas cambiadas), duplicados nuevos, vínculos rotos, vocabulario
@@ -168,3 +172,38 @@ controlado (nuevos sinónimos de obra).
 ### Gestión del propio framework
 Los cambios a la taxonomía se versionan en el historial de GitHub y deben reflejarse a la vez en `instrucciones_agente.txt` y en `KLECT_conocimiento.md`.
 
+---
+
+## 5. Lecciones sin datos cuantitativos: buenas prácticas en validación y pilotos
+
+### El problema
+Muchas lecciones valiosas llegan como relato y recomendaciones, sin costos, plazos ni frecuencia. Descartarlas pierde conocimiento útil; publicarlas como si estuvieran
+probadas pone en riesgo decisiones. KLECT resuelve esto **marcándolas**, no escondiéndolas ni completándolas.
+
+### Sello de validez (campo `validez` de la ficha)
+| Nivel de evidencia | Significa | Estatus resultante |
+|---|---|---|
+| `CUANTITATIVA` | Cifras de impacto/costo/plazo en la fuente y medición del efecto de la recomendación | `VALIDADA` |
+| `PARCIAL` | Alguna cifra; faltan indicadores | `EN_VALIDACION` |
+| `CUALITATIVA` | Solo relato y recomendaciones | `EN_VALIDACION` |
+
+Si el nivel no es `CUANTITATIVA`, la ficha muestra `🧪 EN VALIDACIÓN — FALTAN INDICADORES OBJETIVOS: <lista>` y la lista `indicadores_faltantes`
+(p. ej. `impacto_costo`, `impacto_plazo`, `frecuencia_ocurrencia`, `efectividad_recomendacion`, `linea_base`).
+
+### Cómo se usa en la organización
+- **Buena práctica en validación:** se puede aplicar la recomendación (también como ítem de checklist backward-flow, con la etiqueta "(Buena práctica en validación)"), sabiendo que su beneficio no está medido.
+- **No** se cita como evidencia de ahorro, reducción de plazo o efectividad.
+- **Plan piloto** (plantilla KLECT-PILOT, sección [05b] de `KLECT_conocimiento.md`; comando `/piloto`): el agente propone la hipótesis (tomada de la recomendación de la lección) y los indicadores a medir. La organización define alcance, responsable, línea base, meta y criterios; **el agente no inventa cifras**.
+
+### Ciclo de vida
+`EN_VALIDACION` → piloto `PROPUESTO` → `APROBADO` (lo aprueba una persona responsable) → `EN_CURSO` → `CERRADO` → decisión humana: `VALIDADA` · `DESCARTADA` · `EXTENDER_PILOTO`.
+
+### Buenas prácticas para el piloto
+1. Medir la **línea base antes** de aplicar la recomendación.
+2. Fijar **criterios de éxito y descarte antes** de empezar.
+3. Definir quién registra cada dato y en qué documento (parte diario, NCR, acta, control de costos).
+4. Cargar los resultados reales al cierre; el agente los compara con el criterio previo y **recomienda**, no decide.
+5. Si se valida, actualizar la ficha F01 (nivel `CUANTITATIVA`, retirar el sello); si se descarta, dejar constancia.
+
+### Roles
+El **Dueño de lección** impulsa el piloto, el **Knowledge Manager** aprueba el plan y cambia el estatus, y el **Revisor de diseño** aplica la buena práctica mientras tanto.

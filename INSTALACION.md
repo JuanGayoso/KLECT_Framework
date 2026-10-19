@@ -4,7 +4,7 @@ Solo necesita **2 archivos** de este repositorio:
 
 | Archivo | Para qué | Dónde va |
 |---|---|---|
-| [`instrucciones_agente.txt`](instrucciones_agente.txt) (≈7.400 caracteres) | Instrucciones del agente, con el protocolo anti-invención completo | Campo "Instrucciones" |
+| [`instrucciones_agente.txt`](instrucciones_agente.txt) (≈7.900 caracteres) | Instrucciones del agente, con el protocolo anti-invención completo | Campo "Instrucciones" |
 | [`KLECT_conocimiento.md`](KLECT_conocimiento.md) (≈60 KB) | Taxonomía, plantillas, esquema, guías por modo, ejemplos, SQL/SPARQL | Archivos de conocimiento |
 
 ## Cómo obtener los archivos desde GitHub (sin Git)
@@ -39,6 +39,7 @@ Requiere un plan que permita crear GPTs.
    - `/etiquetar` (pego texto libre para clasificar)
    - `/auditar` (pego una lista de títulos de mi wiki)
    - `/retroalimentar` (pego una lección y quiero el ítem de checklist)
+   - `/piloto` (pego una lección sin cifras y quiero un plan piloto para validarla)
 7. Guarde (privado o compartido con su organización).
 
 ## C) Gemini — Gem

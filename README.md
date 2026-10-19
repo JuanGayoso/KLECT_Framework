@@ -21,7 +21,7 @@ Según el [paper original](KLECT_Framework_IconicaGestion_2025.pdf) (Resumen y �
 
 Clasifica con una taxonomía de **5 categorías** (supuestos de diseño erróneos, defectos de diseño, especificaciones deficientes, defectos de construcción,
 problemas de mantenibilidad) y **8 facetas** (sistema, tipo de proyecto, fase, severidad, disciplina, causa raíz, impacto, Uniclass 2015).
-Comandos: `/analizar` · `/auditar` · `/etiquetar` · `/buscar` · `/retroalimentar` · `/arquitectura`.
+Comandos: `/analizar` · `/auditar` · `/etiquetar` · `/buscar` · `/retroalimentar` · `/arquitectura` · `/piloto`.
 
 ## Regla central: no inventa la lección
 
@@ -30,6 +30,14 @@ El agente es editor, no autor. Cada dato de hecho (qué pasó, causa, cifras, so
 
 **1 Extracción** (con citas literales) → **2 Preguntas** → **3 Borrador** → **4 Publicación**, que solo ocurre cuando usted escribe `PUBLICAR`.
 Si le pide "complétalo tú" o "estima el costo", se niega para esos campos. Pruebas en [`PRUEBAS.md`](PRUEBAS.md).
+
+## Lecciones relevantes pero sin cifras: sello de validez y plan piloto
+
+Una lección con buenas recomendaciones pero sin datos cuantitativos de impacto o costo **sí se levanta**, pero queda marcada:
+`🧪 EN VALIDACIÓN — FALTAN INDICADORES OBJETIVOS` (campo `validez` de la ficha, con la lista de `indicadores_faltantes`).
+La organización puede adoptarla como **buena práctica en validación**, con esa advertencia, y el agente propone un **plan piloto** (`/piloto`)
+para generar los sustentos cuantitativos. El agente nunca estima cifras para quitar el sello: pasa a `VALIDADA` solo con datos medidos que usted aporte.
+Detalle en [`GUIA_IMPLEMENTACION.md`](GUIA_IMPLEMENTACION.md) (sección 5).
 
 ## Cómo usarlo (sin instalar nada)
 
@@ -45,10 +53,10 @@ Pasos detallados por plataforma y cómo descargar desde GitHub: [`INSTALACION.md
 | Archivo | Para qué |
 |---|---|
 | [`KLECT_Framework_IconicaGestion_2025.pdf`](KLECT_Framework_IconicaGestion_2025.pdf) | **Paper original** (22 p.): de aquí sale toda la taxonomía, el ciclo de vida, la ontología y el toolbox. Es referencia para personas; no se sube al agente |
-| [`instrucciones_agente.txt`](instrucciones_agente.txt) | Las instrucciones del agente (≈7.400 caracteres, caben en un GPT) |
-| [`KLECT_conocimiento.md`](KLECT_conocimiento.md) | Todo el conocimiento: instrucciones completas, taxonomía, esquema de ficha, plantillas, guías por modo, ejemplos, ontología, SQL y SPARQL |
+| [`instrucciones_agente.txt`](instrucciones_agente.txt) | Las instrucciones del agente (≈7.900 caracteres, caben en un GPT) |
+| [`KLECT_conocimiento.md`](KLECT_conocimiento.md) | Todo el conocimiento: instrucciones completas, taxonomía, esquema de ficha, plantillas (incluye KLECT-PILOT), guías por modo, ejemplos, ontología, SQL y SPARQL |
 | [`INSTALACION.md`](INSTALACION.md) | Guía paso a paso para Claude, ChatGPT y Gemini |
-| [`PRUEBAS.md`](PRUEBAS.md) | 11 casos para comprobar que el agente no alucina |
+| [`PRUEBAS.md`](PRUEBAS.md) | 15 casos para comprobar que el agente no alucina |
 | [`GUIA_IMPLEMENTACION.md`](GUIA_IMPLEMENTACION.md) | Cultura de aprendizaje, arquitectura de la wiki, hoja de ruta y gobierno |
 | [`LICENSE.md`](LICENSE.md) | Licencia CC BY-SA 4.0 |
 
