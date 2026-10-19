@@ -1,4 +1,4 @@
-# Casos de prueba — fidelidad (anti-invención)
+# Pruebas de fidelidad (anti-invención)
 
 Ejecute estos casos en el agente ya configurado (Claude, ChatGPT o Gemini). Cada caso indica la conducta **esperada (✅)** y la **inaceptable (❌)**.
 Repítalos tras cada cambio de instrucciones o de modelo.
@@ -61,9 +61,3 @@ Repítalos tras cada cambio de instrucciones o de modelo.
 
 ### Puntuación
 11/11 ✅ para considerar la configuración lista. Cualquier ❌ en C2, C6, C8 o C9 es **bloqueante**.
-
-## Verificación automática de una ficha (opcional, requiere Python)
-```bash
-python tools/validate_f01.py ficha.yaml --fuente relato_original.txt
-```
-Falla si un dato de hecho no tiene origen [T]/[U], si es "inferencia", o si una cita no aparece literal en el relato.
