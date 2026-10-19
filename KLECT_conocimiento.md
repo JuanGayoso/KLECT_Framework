@@ -397,7 +397,6 @@ un registro propio de códigos Uniclass verificados.
 ```json
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://github.com/JuanGayoso/KLECT_Framework/el esquema de la sección [04]",
   "title": "KLECT-F01 · Ficha de lección aprendida",
   "description": "Esquema de metadatos de una lección aprendida AEC bajo el Framework KLECT v1.0",
   "type": "object",
@@ -1000,12 +999,12 @@ Riesgo: 🔴/🟠/🟡
 ### Modo `/analizar [artículo]`
 
 **Propósito:** clasificar un artículo de wiki, extraer metadatos y proponer mejoras estructurales — **sin inventar contenido**.
-**Rige el PROTOCOLO DE FIDELIDAD** (el PROTOCOLO DE FIDELIDAD de la sección [01]): 4 fases obligatorias.
+**Rige el PROTOCOLO DE FIDELIDAD** (sección [01]): 4 fases obligatorias.
 
 ## Flujo
 1. **Fase 1 — Extracción:** tabla campo/valor/origen/cita literal + lista `NO ESTÁ EN EL TEXTO` + diagnóstico (paso 1 del protocolo de análisis).
 2. **Fase 2 — Preguntas:** P1 bloqueantes y P2 complementarias; máx. 7; neutras. Esperar respuesta.
-3. **Fase 3 — Borrador:** clasificación KLECT, ficha F01 (YAML conforme a el esquema de la sección [04] con `trazabilidad` y `citas_fuente`),
+3. **Fase 3 — Borrador:** clasificación KLECT, ficha F01 (YAML conforme al esquema de la sección [04], con `trazabilidad` y `citas_fuente`),
    indexación, estructura de wiki, backward-flow si aplica. Estado `BORRADOR`. Auditoría de fidelidad.
 4. **Fase 4 — Publicación:** declaración de fidelidad; solo con `PUBLICAR` el estado pasa a `PUBLICABLE`.
 
@@ -1090,13 +1089,13 @@ campos_faltantes: []
 2. Normalizar a términos controlados y expandir con sinónimos de obra.
 3. Mapear a facetas (CAT, F1, F3, F4…) con los valores que la pregunta sustenta; no restringir de más.
 4. Describir **qué tipo de lecciones** debería devolver el sistema (el agente no inventa lecciones existentes).
-5. Emitir SPARQL (la sección [12]) y su equivalente SQL (las secciones [13] y [14]).
+5. Emitir SPARQL (sección [12]) y su equivalente SQL (secciones [13] y [14]).
 
 ## Ejemplo
 Pregunta: *"¿Qué problemas hemos tenido con filtraciones en sótanos?"*
 - Controlados: filtración, impermeabilización, muro de sótano, junta de construcción.
 - Facetas: F1 Envolvente/Estructural; CAT-2, CAT-3, CAT-4; F3 Diseño Detallado y Construcción.
-- SPARQL: ver la sección [12] adaptando categoría y sistema.
+- SPARQL: ver la sección [12], adaptando categoría y sistema.
 
 ## 09.5 Modo /retroalimentar
 
@@ -1472,6 +1471,9 @@ CREATE TABLE IF NOT EXISTS lecciones (
     ubicacion           TEXT,
     proyecto_origen     TEXT,
     descripcion         TEXT NOT NULL,
+    fase_origen         TEXT CHECK (fase_origen IN ('Prefactibilidad','Diseño Básico','Diseño Detallado','Procura','Construcción','Operación')),
+    fase_deteccion      TEXT CHECK (fase_deteccion IN ('Prefactibilidad','Diseño Básico','Diseño Detallado','Procura','Construcción','Operación')),
+    causa_raiz_detalle  TEXT,
     solucion            TEXT,
     recomendacion       TEXT,
     aplica_cuando       TEXT,
@@ -1501,7 +1503,7 @@ CREATE TABLE IF NOT EXISTS leccion_backward (
     leccion_id        TEXT PRIMARY KEY REFERENCES lecciones(id) ON DELETE CASCADE,
     item_checklist    TEXT NOT NULL,
     fase_verificacion TEXT NOT NULL CHECK (fase_verificacion IN ('Prefactibilidad','Diseño Básico','Diseño Detallado','Procura','Construcción','Operación')),
-    nivel_riesgo      TEXT NOT NULL CHECK (nivel_riesgo IN ('Crítico','Alto','Medio'))
+    nivel_riesgo      TEXT NOT NULL CHECK (nivel_riesgo IN ('Crítico','Alto','Medio'))  -- sin emoji; en el YAML se escribe 🔴 Crítico / 🟠 Alto / 🟡 Medio
 );
 
 CREATE TABLE IF NOT EXISTS leccion_vinculo (

@@ -154,10 +154,10 @@ ajústelos a su capacidad.
 ### Métricas sugeridas
 | Métrica | Pregunta que responde | Fuente |
 |---|---|---|
-| Cobertura CAT × Sistema | ¿Dónde no estamos aprendiendo? | `/auditar`, consulta 4 de `consultas_tipo.sql` |
+| Cobertura CAT × Sistema | ¿Dónde no estamos aprendiendo? | `/auditar`; consulta 4 de la sección [14] de `KLECT_conocimiento.md` |
 | % fichas con F1–F8 completas | ¿Se puede recuperar? | Revisión de fichas / `PRUEBAS.md` |
 | % fichas con >2 criterios fallidos | ¿Calidad de captura? | Revisión de calidad |
-| Duplicados detectados / fusionados | ¿Unicidad? | `/auditar`, consulta 5 |
+| Duplicados detectados / fusionados | ¿Unicidad? | `/auditar`; consulta 5 de la sección [14] |
 | Ítems de checklist aplicados por proyecto | ¿Se cierra el ciclo? | `leccion_backward` |
 | Tiempo desde evento hasta ficha publicada | ¿Capturamos a tiempo? | Registro de la wiki |
 
