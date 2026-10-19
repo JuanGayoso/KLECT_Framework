@@ -1,0 +1,37 @@
+# EJEMPLO ILUSTRATIVO — caso hipotético para demostrar el formato. No es un caso real.
+id: CAT4-EST-CON-001
+titulo: Curado inadecuado de concreto en losa de entrepiso
+categoria: CAT-4
+sistema: Estructural
+tipo_proyecto: Comercial
+fase: Construcción
+severidad: Media
+severidad_provisional: true
+disciplina: Contratista
+causa_raiz: Proceso
+impacto: [Calidad, Cronograma]
+uniclass_ss: Ss_20
+uniclass_verificado: false
+componente: Losa de entrepiso
+ubicacion: null
+proyecto_origen: null
+descripcion: >-
+  Se retiró el curado húmedo de una losa de entrepiso antes del tiempo especificado,
+  con aparición posterior de fisuras superficiales por retracción.
+causa_raiz_detalle: Programa de obra presionó el desencofrado; el curado no figuraba como actividad con responsable.
+impacto_costo: null
+impacto_plazo: null
+solucion: null
+recomendacion: Incluir el curado como actividad programada con responsable, duración mínima y registro de verificación.
+aplica_cuando: Elementos de concreto expuestos a evaporación rápida (losas, pavimentos).
+no_aplica_cuando: Concreto masivo con protocolo térmico específico.
+adjuntos_sugeridos: [Fotos de fisuración, Registro de curado, Informe de ensayos]
+campos_faltantes: [ubicacion, impacto_costo, impacto_plazo, solucion, proyecto_origen]
+terminos_controlados: [curado de concreto, fisuración por retracción, losa de entrepiso]
+sinonimos_sectoriales: [mojado de losa, curado húmedo, rajaduras en losa]
+terminos_relacionados: [desencofrado, resistencia a edad temprana, durabilidad]
+preguntas_busqueda:
+  - ¿Qué pasa si se retira el curado antes de tiempo?
+  - ¿Por qué se fisuran las losas recién vaciadas?
+  - ¿Cómo programar el curado como actividad de obra?
+backward_flow: null

@@ -1,0 +1,77 @@
+@prefix klect: <https://iconicagestion.example/klect#> .
+@prefix owl:   <http://www.w3.org/2002/07/owl#> .
+@prefix rdf:   <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs:  <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd:   <http://www.w3.org/2001/XMLSchema#> .
+@prefix skos:  <http://www.w3.org/2004/02/skos/core#> .
+
+# Ontología KLECT v1.0 (L3) — Framework KLECT · Icónica Gestión S.A.C. (2025) · CC BY-SA 4.0
+# NOTA: el namespace es un marcador de posición; reemplácelo por el URI institucional de su organización.
+
+<https://iconicagestion.example/klect> a owl:Ontology ;
+    rdfs:label "Ontología KLECT v1.0"@es .
+
+# ---- Clases ----
+klect:Leccion a owl:Class ; rdfs:label "Lección aprendida"@es .
+klect:Categoria a owl:Class ; rdfs:label "Categoría KLECT"@es .
+klect:Sistema a owl:Class ; rdfs:label "Sistema constructivo"@es .
+klect:Fase a owl:Class ; rdfs:label "Fase del proyecto"@es .
+klect:Severidad a owl:Class ; rdfs:label "Severidad"@es .
+klect:Disciplina a owl:Class ; rdfs:label "Disciplina"@es .
+klect:CausaRaiz a owl:Class ; rdfs:label "Causa raíz"@es .
+klect:Impacto a owl:Class ; rdfs:label "Dimensión de impacto"@es .
+klect:TipoProyecto a owl:Class ; rdfs:label "Tipo de proyecto"@es .
+klect:ItemChecklist a owl:Class ; rdfs:label "Ítem de checklist backward-flow"@es .
+
+# ---- Propiedades de objeto ----
+klect:tieneCategoria a owl:ObjectProperty ; rdfs:domain klect:Leccion ; rdfs:range klect:Categoria .
+klect:afectaSistema a owl:ObjectProperty ; rdfs:domain klect:Leccion ; rdfs:range klect:Sistema .
+klect:ocurreEnFase a owl:ObjectProperty ; rdfs:domain klect:Leccion ; rdfs:range klect:Fase .
+klect:tieneSeveridad a owl:ObjectProperty ; rdfs:domain klect:Leccion ; rdfs:range klect:Severidad .
+klect:tieneDisciplina a owl:ObjectProperty ; rdfs:domain klect:Leccion ; rdfs:range klect:Disciplina .
+klect:tieneCausaRaiz a owl:ObjectProperty ; rdfs:domain klect:Leccion ; rdfs:range klect:CausaRaiz .
+klect:generaImpacto a owl:ObjectProperty ; rdfs:domain klect:Leccion ; rdfs:range klect:Impacto .
+klect:aplicaATipo a owl:ObjectProperty ; rdfs:domain klect:Leccion ; rdfs:range klect:TipoProyecto .
+klect:generaChecklist a owl:ObjectProperty ; rdfs:domain klect:Leccion ; rdfs:range klect:ItemChecklist .
+klect:verificarEnFase a owl:ObjectProperty ; rdfs:domain klect:ItemChecklist ; rdfs:range klect:Fase .
+klect:relacionadaCon a owl:ObjectProperty, owl:SymmetricProperty ; rdfs:domain klect:Leccion ; rdfs:range klect:Leccion .
+klect:duplicaA a owl:ObjectProperty ; rdfs:domain klect:Leccion ; rdfs:range klect:Leccion .
+
+# ---- Propiedades de datos ----
+klect:codigoUniclassSs a owl:DatatypeProperty ; rdfs:domain klect:Leccion ; rdfs:range xsd:string .
+klect:descripcion a owl:DatatypeProperty ; rdfs:domain klect:Leccion ; rdfs:range xsd:string .
+klect:recomendacion a owl:DatatypeProperty ; rdfs:domain klect:Leccion ; rdfs:range xsd:string .
+klect:textoChecklist a owl:DatatypeProperty ; rdfs:domain klect:ItemChecklist ; rdfs:range xsd:string .
+
+# ---- Individuos: categorías ----
+klect:CAT-1 a klect:Categoria ; rdfs:label "Supuestos de diseño erróneos"@es .
+klect:CAT-2 a klect:Categoria ; rdfs:label "Defectos de diseño"@es .
+klect:CAT-3 a klect:Categoria ; rdfs:label "Especificaciones deficientes"@es .
+klect:CAT-4 a klect:Categoria ; rdfs:label "Defectos de construcción"@es .
+klect:CAT-5 a klect:Categoria ; rdfs:label "Problemas de mantenibilidad"@es .
+
+# ---- Individuos: sistemas, fases, severidad (extender según taxonomy/klect_taxonomy.yaml) ----
+klect:Estructural a klect:Sistema ; rdfs:label "Estructural"@es .
+klect:Envolvente a klect:Sistema ; rdfs:label "Envolvente"@es .
+klect:Acabados a klect:Sistema ; rdfs:label "Acabados"@es .
+klect:MEP-Mec a klect:Sistema ; rdfs:label "MEP-Mec"@es .
+klect:MEP-Elec a klect:Sistema ; rdfs:label "MEP-Elec"@es .
+klect:MEP-San a klect:Sistema ; rdfs:label "MEP-San"@es .
+klect:Sitio a klect:Sistema ; rdfs:label "Sitio"@es .
+
+klect:Prefactibilidad a klect:Fase . klect:DisenoBasico a klect:Fase ; rdfs:label "Diseño Básico"@es .
+klect:DisenoDetallado a klect:Fase ; rdfs:label "Diseño Detallado"@es .
+klect:Procura a klect:Fase . klect:Construccion a klect:Fase ; rdfs:label "Construcción"@es .
+klect:Operacion a klect:Fase ; rdfs:label "Operación"@es .
+
+klect:Critica a klect:Severidad ; rdfs:label "Crítica"@es .
+klect:Alta a klect:Severidad . klect:Media a klect:Severidad . klect:Baja a klect:Severidad .
+
+# ---- Ejemplo de lección ----
+klect:CAT4-EST-CON-001 a klect:Leccion ;
+    rdfs:label "Curado inadecuado de concreto"@es ;
+    klect:tieneCategoria klect:CAT-4 ;
+    klect:afectaSistema klect:Estructural ;
+    klect:ocurreEnFase klect:Construccion ;
+    klect:tieneSeveridad klect:Media ;
+    klect:descripcion "Ejemplo ilustrativo de estructura RDF; no es un caso real."@es .

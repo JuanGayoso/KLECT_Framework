@@ -1,0 +1,64 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/JuanGayoso/KLECT_Framework/schema/klect_f01.schema.json",
+  "title": "KLECT-F01 · Ficha de lección aprendida",
+  "description": "Esquema de metadatos de una lección aprendida AEC bajo el Framework KLECT v1.0",
+  "type": "object",
+  "required": ["id", "titulo", "categoria", "sistema", "tipo_proyecto", "fase", "severidad", "disciplina", "causa_raiz", "impacto", "descripcion"],
+  "properties": {
+    "id": {"type": "string", "pattern": "^CAT[1-5]-[A-Z]{3}-[A-Z]{3}-\\d{3}$"},
+    "titulo": {"type": "string", "minLength": 5},
+    "categoria": {"enum": ["CAT-1", "CAT-2", "CAT-3", "CAT-4", "CAT-5"]},
+    "sistema": {"enum": ["Estructural", "Envolvente", "Acabados", "MEP-Mec", "MEP-Elec", "MEP-San", "Sitio"]},
+    "tipo_proyecto": {"enum": ["Residencial", "Comercial", "Industrial", "Salud", "Educación", "Infraestructura"]},
+    "fase": {"enum": ["Prefactibilidad", "Diseño Básico", "Diseño Detallado", "Procura", "Construcción", "Operación"]},
+    "fase_origen": {"enum": ["Prefactibilidad", "Diseño Básico", "Diseño Detallado", "Procura", "Construcción", "Operación", null]},
+    "fase_deteccion": {"enum": ["Prefactibilidad", "Diseño Básico", "Diseño Detallado", "Procura", "Construcción", "Operación", null]},
+    "severidad": {"enum": ["Crítica", "Alta", "Media", "Baja"]},
+    "severidad_provisional": {"type": "boolean", "default": false},
+    "disciplina": {"enum": ["Arquitectura", "Estructural", "MEP", "Gestión Proyecto", "Contratista", "Subcontratista"]},
+    "causa_raiz": {"enum": ["Comunicación", "Proceso", "Competencia", "Herramienta", "Condición externa"]},
+    "impacto": {
+      "type": "array", "minItems": 1, "uniqueItems": true,
+      "items": {"enum": ["Costo", "Cronograma", "Calidad", "Seguridad", "Medio Ambiente", "Reputación"]}
+    },
+    "uniclass_ss": {"type": ["string", "null"], "pattern": "^Ss_\\d{2}(_\\d{2}){0,3}$"},
+    "uniclass_verificado": {"type": "boolean"},
+    "componente": {"type": ["string", "null"]},
+    "ubicacion": {"type": ["string", "null"]},
+    "descripcion": {"type": "string", "minLength": 20},
+    "causa_raiz_detalle": {"type": ["string", "null"]},
+    "impacto_costo": {"type": ["string", "null"], "description": "Solo si figura en el texto fuente"},
+    "impacto_plazo": {"type": ["string", "null"], "description": "Solo si figura en el texto fuente"},
+    "solucion": {"type": ["string", "null"]},
+    "recomendacion": {"type": ["string", "null"]},
+    "aplica_cuando": {"type": ["string", "null"]},
+    "no_aplica_cuando": {"type": ["string", "null"]},
+    "proyecto_origen": {"type": ["string", "null"]},
+    "adjuntos_sugeridos": {"type": "array", "items": {"type": "string"}},
+    "campos_faltantes": {"type": "array", "items": {"type": "string"}},
+    "terminos_controlados": {"type": "array", "items": {"type": "string"}},
+    "sinonimos_sectoriales": {"type": "array", "items": {"type": "string"}},
+    "terminos_relacionados": {"type": "array", "items": {"type": "string"}},
+    "preguntas_busqueda": {"type": "array", "minItems": 3, "maxItems": 5, "items": {"type": "string"}},
+    "backward_flow": {
+      "type": ["object", "null"],
+      "properties": {
+        "item_checklist": {"type": "string"},
+        "fase_verificacion": {"enum": ["Prefactibilidad", "Diseño Básico", "Diseño Detallado", "Procura", "Construcción", "Operación"]},
+        "nivel_riesgo": {"enum": ["🔴 Crítico", "🟠 Alto", "🟡 Medio"]}
+      },
+      "required": ["item_checklist", "fase_verificacion", "nivel_riesgo"]
+    }
+  },
+  "allOf": [
+    {
+      "if": {"properties": {"categoria": {"enum": ["CAT-1", "CAT-2", "CAT-3"]}}},
+      "then": {"required": ["backward_flow"], "properties": {"backward_flow": {"type": "object"}}}
+    },
+    {
+      "if": {"properties": {"severidad": {"enum": ["Alta", "Crítica"]}}},
+      "then": {"required": ["backward_flow"], "properties": {"backward_flow": {"type": "object"}}}
+    }
+  ]
+}
